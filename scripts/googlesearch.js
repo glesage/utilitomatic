@@ -7,11 +7,8 @@ var system = require('system');
 var search = system.args[1];
 var debug = system.args[2];
 
-//Return links
-var ReturnData = {};
-
 var page = new WebPage(),
-    searchSubmited = false;
+    searchSubmited = null;
 
 page.customHeaders = {
     "User-Agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
@@ -48,7 +45,7 @@ function submitSearch() {
         $('form').trigger('submit');
     }, search);
 
-    searchSubmited = true;
+    searchSubmited = 1;
 }
 
 function injectJQuery() {
