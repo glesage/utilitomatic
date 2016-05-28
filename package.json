@@ -1,0 +1,20 @@
+{
+    "name": "utilitomatic",
+    "version": "0.0.1",
+    "main": "./app",
+    "description": "Utilities finder for your home",
+    "author": {
+        "name": "Geoffroy Lesage",
+        "email": "gefthefrench@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/glesage/utilitomatic"
+    },
+    "engines": {
+        "node": ">= v5.4.1"
+    },
+    "dependencies": {
+        "phantom": "2.1.2"
+    }
+}
