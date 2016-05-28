@@ -12,14 +12,14 @@ var binPath = phantomjs.path;
  * @param {data}            Optional Object.    Arguments passed to script.  Must be JSON.stringified to be sent
  *                                              to Phantom, which must then JSON.parse it to use it as an object.
  */
-module.exports = function(script, data) {
+module.exports = function(script, data, debug) {
     return new Promise(function(resolve, reject) {
         data = JSON.stringify(data);
 
         var childArgs = [
             path.join(__dirname, '/scripts/' + script + '.js'),
             data,
-            true // debug
+            debug
         ];
 
         childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
