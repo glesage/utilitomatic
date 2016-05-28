@@ -17,8 +17,8 @@ page.customHeaders = {
 
 page.onLoadFinished = function() {
     if (debug) {
-        page.render('export.png');
-        fs.write('google.html', page.content, 'w');
+        page.render('debug/export.png');
+        fs.write('debug/google.html', page.content, 'w');
     }
 
     if (!searchSubmited) injectJQuery();
