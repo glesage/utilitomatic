@@ -1,26 +1,6 @@
-var phantom = require('phantom');
+var crawler = require('./crawler');
 
-var sitepage = null;
-var phInstance = null;
-phantom.create()
-    .then(instance => {
-        phInstance = instance;
-        return instance.createPage();
-    })
-    .then(page => {
-        sitepage = page;
-        return page.open('https://google.com/');
-    })
-    .then(status => {
-        console.log(status);
-        return sitepage.property('content');
-    })
-    .then(content => {
-        console.log(content);
-        sitepage.close();
-        phInstance.exit();
-    })
-    .catch(error => {
-        console.log(error);
-        phInstance.exit();
-    });
+var search = 'chicago electricity 60647';
+crawler('googleSearch', search).then(function(res) {
+    console.log(res);
+}).catch(console.log);
