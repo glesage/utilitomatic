@@ -1,52 +1,51 @@
 /**
  * Dependencies
  */
-var fs = require('fs');
-var _ = require('lodash');
-
-/**
- * Parameters passed as arguments to script
- */
 var system = require('system');
-var website = system.args[1].replace(/"/g, "");
-var debug = system.args[2];
 
 /**
- * Page creation & configuration
+ * Script initialization
  */
-var page = new WebPage();
-page.customHeaders = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
-    "Accept-Language": "en"
+var Script = new require('./script');
+var script = new Script({
+    name: 'ratefinder',
+    url: system.args[1],
+    debug: system.args[2],
+    viewportSize: { width: 1024, height: 800 }
+});
+
+script.page.onLoadFinished = function() {
+    if (script.debug) script.outputDebug();
+    findRates();
 };
 
 var rateRegex = /[$]?0.\d+\s*(\/)\s*(kWh|kwh|KWH|Kwh)/ig;
 var scriptsRegex = /<(no)?script(.|\n)+?<\/(no)?script>/ig;
 
-/**
- * PhantomJS handlers
- */
-page.onLoadFinished = function() {
-    if (debug) {
-        page.render('debug/website.png');
-        fs.write('debug/website.html', page.content, 'w');
-    }
+function getRateInfo(body, rates) {
+    script.log('getRateInfo');
+}
 
-    findRates();
-};
+function digDeeper() {
+    script.log('digDeeper');
+}
 
 function findRates() {
-    var body = page.evaluate(function() {
+    var body = script.page.evaluate(function() {
         return document.querySelector("body");
     });
 
     var cleanBody = body.innerHTML.replace(scriptsRegex, "");
+    fs.write('debug/content.txt', cleanBody, 'w');
+
+    // If rates are found on the page, attempt to store them for comparison
     if (rateRegex.test(cleanBody)) {
-        var matches = cleanBody.match(rateRegex);
-        console.log(matches);
+        var rates = cleanBody.match(rateRegex);
+        if (rates && rates.length > 0) getRateInfo(body);
+        else script.log('Something broke when trying to find matches for rates');
     }
+    // Otherwise, attempt to go deeper into the site structure
+    else digDeeper();
 
     phantom.exit();
 }
-
-page.open(website);
