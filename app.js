@@ -1,5 +1,8 @@
 var crawler = require('./crawler');
-var debug = 0;
+var debug = 1;
+
+crawler('ratefinder', 'https://power2switch.com/IL/Chicago/', debug).then(console.log).catch(console.log);
+return;
 
 var search = 'chicago electricity 60647';
 crawler('googleSearch', search, debug).then(function(res) {

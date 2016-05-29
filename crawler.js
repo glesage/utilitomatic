@@ -27,7 +27,8 @@ module.exports = function(script, data, debug) {
             if (err) return reject(err);
             if (stderr) return reject(err);
 
-            resolve(JSON.parse(stdout));
+            resolve(stdout);
+            // resolve(JSON.parse(stdout));
         });
     });
 };

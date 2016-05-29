@@ -10,7 +10,7 @@ var _ = require('lodash');
 var search = system.args[1].replace(/"/g, "");
 var searchSubmited = null;
 
-var Script = new require('./script');
+var Script = new require('../classes/script');
 var script = new Script({
     name: 'googlesearch',
     url: "https://www.google.com/?hl=en",
@@ -35,7 +35,7 @@ function scrapeLinks() {
     returnLinks = _.filter(returnLinks, function(l) {
         return l.indexOf('youtube') === -1;
     });
-    script.log(returnLinks);
+    Script.log(returnLinks);
     phantom.exit();
 }
 

@@ -37,7 +37,7 @@ Script.prototype.outputDebug = function() {
     fs.write('debug/' + this.name + '.html', this.page.content, 'w');
 };
 
-Script.prototype.log = function(data) {
+Script.log = function(data) {
     console.log(JSON.stringify(data));
 };
 

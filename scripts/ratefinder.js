@@ -2,11 +2,13 @@
  * Dependencies
  */
 var system = require('system');
+var fs = require('fs');
+var DOMElement = new require('../classes/dom-element');
 
 /**
  * Script initialization
  */
-var Script = new require('./script');
+var Script = new require('../classes/script');
 var script = new Script({
     name: 'ratefinder',
     url: system.args[1],
@@ -19,30 +21,44 @@ script.page.onLoadFinished = function() {
     findRates();
 };
 
-var rateRegex = /[$]?0.\d+\s*(\/)\s*(kWh|kwh|KWH|Kwh)/ig;
+var rateAmountRegex = /[$]?0.\d+\s*(\/)\s*(kWh|kwh|KWH|Kwh)/ig;
+var rateTimeRegex = /\d?\d\s?(m(o)?|(onths)?)/ig
 var scriptsRegex = /<(no)?script(.|\n)+?<\/(no)?script>/ig;
 
-function getRateInfo(body, rates) {
-    script.log('getRateInfo');
+function getRateInfo(elements) {
+
+    var types = { "r": rateAmountRegex, "d": rateTimeRegex };
+    try {
+        var tree = new DOMElement('root');
+        var test = [];
+        for (var i = 0; i < elements.children.length; i++) {
+            if (!elements.children[i]) continue;
+            var childElement = DOMElement.buildTree(elements.children[i], tree, types);
+            if (childElement) tree.children.push(childElement);
+        }
+        fs.write('debug/out.txt', tree.toString(), 'w');
+    } catch (e) {
+        fs.write('debug/error.txt', e, 'w');
+    }
 }
 
 function digDeeper() {
-    script.log('digDeeper');
+    Script.log('digDeeper');
 }
 
 function findRates() {
     var body = script.page.evaluate(function() {
-        return document.querySelector("body");
+        return document.body;
     });
 
     var cleanBody = body.innerHTML.replace(scriptsRegex, "");
     fs.write('debug/content.txt', cleanBody, 'w');
 
     // If rates are found on the page, attempt to store them for comparison
-    if (rateRegex.test(cleanBody)) {
-        var rates = cleanBody.match(rateRegex);
-        if (rates && rates.length > 0) getRateInfo(body);
-        else script.log('Something broke when trying to find matches for rates');
+    if (rateAmountRegex.test(cleanBody) && rateTimeRegex.test(cleanBody)) {
+        getRateInfo(script.page.evaluate(function() {
+            return document.documentElement;
+        }));
     }
     // Otherwise, attempt to go deeper into the site structure
     else digDeeper();
