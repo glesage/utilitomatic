@@ -1,2 +1,2 @@
 # utilitomatic
-Utilities finder for your home
+App that finds best electricity rates in your area
