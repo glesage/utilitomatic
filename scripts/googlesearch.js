@@ -8,7 +8,7 @@ var _ = require('lodash');
  * Parameters passed as arguments to script
  */
 var system = require('system');
-var search = system.args[1];
+var search = system.args[1].replace(/"/g, "");
 var debug = system.args[2];
 
 /**
